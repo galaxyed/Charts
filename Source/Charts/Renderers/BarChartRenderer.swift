@@ -303,7 +303,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         
         let borderWidth = dataSet.barBorderWidth
         let borderColor = dataSet.barBorderColor
+        let cornerRadius = dataSet.barCornerRadius
         let drawBorder = borderWidth > 0.0
+        let hasRoundedCorner = cornerRadius > 0.0
         
         context.saveGState()
         defer { context.restoreGState() }
@@ -379,13 +381,34 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
             
-            context.fill(barRect)
+            if !hasRoundedCorner {
+                context.fill(barRect)
+            } else {
+                let bezierPath = UIBezierPath(roundedRect:barRect,
+                                              byRoundingCorners:[.topRight, .topLeft],
+                                              cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
+               context.addPath(bezierPath.cgPath)
+               context.drawPath(using: .fill)
+            }
             
             if drawBorder
             {
-                context.setStrokeColor(borderColor.cgColor)
-                context.setLineWidth(borderWidth)
-                context.stroke(barRect)
+                if !hasRoundedCorner {
+                    context.setStrokeColor(borderColor.cgColor)
+                    context.setLineWidth(borderWidth)
+                    context.stroke(barRect)
+                } else {
+                    let p = UIBezierPath(roundedRect: barRect,
+                                            byRoundingCorners: [.topLeft, .topRight],
+                                            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
+                    borderColor.setStroke()
+                    p.stroke()
+                    let p2 = UIBezierPath()
+                    p2.move(to: CGPoint(x:0, y: barRect.height))
+                    p2.addLine(to: CGPoint(x: barRect.width, y: barRect.height))
+                    p2.lineWidth = borderWidth
+                    p2.stroke(with: .clear, alpha: 1)
+                }
             }
 
             // Create and append the corresponding accessibility element to accessibilityOrderedElements
