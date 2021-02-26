@@ -433,21 +433,34 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
             
-            if !hasRoundedCorner {
-                context.fill(barRect)
-            } else {
+            /// Fill bar color with roundedCorner topleft & topRight
+            func fillColorWithBorder() {
                 let bezierPath = UIBezierPath(roundedRect:barRect,byRoundingCorners:[.topRight, .topLeft], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
                 context.addPath(bezierPath.cgPath)
                 context.drawPath(using: .fill)
             }
             
+            // Only set roundCorner at topbar (handle for bar contained stack)
+            let isDrawBorder = (j % stackSize) == (stackSize - 1)
+            if !isStacked {
+                if !hasRoundedCorner {
+                    context.fill(barRect)
+                } else {
+                    fillColorWithBorder()
+                }
+            } else {
+                if !hasRoundedCorner || !isDrawBorder {
+                    context.fill(barRect)
+                } else {
+                    fillColorWithBorder()
+                }
+            }
+            
+            
             if drawBorder
             {
-                if !hasRoundedCorner {
-                    context.setStrokeColor(borderColor.cgColor)
-                    context.setLineWidth(borderWidth)
-                    context.stroke(barRect)
-                } else {
+                /// draw border with roundCorner
+                func drawBorderWithCorner() {
                     let p = UIBezierPath(roundedRect: barRect,
                                             byRoundingCorners: [.topLeft, .topRight],
                                             cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
@@ -458,6 +471,24 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                     p2.addLine(to: CGPoint(x: barRect.width, y: barRect.height))
                     p2.lineWidth = borderWidth
                     p2.stroke(with: .clear, alpha: 1)
+                }
+                
+                if !isStacked {
+                    if !hasRoundedCorner {
+                        context.setStrokeColor(borderColor.cgColor)
+                        context.setLineWidth(borderWidth)
+                        context.stroke(barRect)
+                    } else {
+                        drawBorderWithCorner()
+                    }
+                } else {
+                    if !hasRoundedCorner || !isDrawBorder {
+                        context.setStrokeColor(borderColor.cgColor)
+                        context.setLineWidth(borderWidth)
+                        context.stroke(barRect)
+                    } else {
+                        drawBorderWithCorner()
+                    }
                 }
             }
 
