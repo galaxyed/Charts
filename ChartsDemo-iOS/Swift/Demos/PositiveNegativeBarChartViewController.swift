@@ -119,4 +119,9 @@ extension PositiveNegativeBarChartViewController: IAxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
         return dataLabels[min(max(Int(value), 0), dataLabels.count - 1)]
     }
+    
+    public func attributeForValue(_ value: Double,
+                                  axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
 }

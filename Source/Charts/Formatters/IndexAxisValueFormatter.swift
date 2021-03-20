@@ -56,4 +56,9 @@ open class IndexAxisValueFormatter: NSObject, IAxisValueFormatter
         guard values.indices.contains(index), index == Int(value) else { return "" }
         return _values[index]
     }
+    
+    open func attributeForValue(_ value: Double, axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
+
 }

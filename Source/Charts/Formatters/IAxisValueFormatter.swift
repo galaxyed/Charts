@@ -27,4 +27,7 @@ public protocol IAxisValueFormatter: class
     func stringForValue(_ value: Double,
                         axis: AxisBase?) -> String
     
+    func attributeForValue(_ value: Double,
+                           axis: AxisBase?) -> [NSAttributedString.Key : Any]?
+    
 }

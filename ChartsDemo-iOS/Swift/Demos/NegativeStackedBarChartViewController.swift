@@ -131,4 +131,9 @@ extension NegativeStackedBarChartViewController: IAxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
         return String(format: "%03.0f-%03.0f", value, value + 10)
     }
+    
+    public func attributeForValue(_ value: Double,
+                                  axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
 }

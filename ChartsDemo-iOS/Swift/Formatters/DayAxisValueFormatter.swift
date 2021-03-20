@@ -46,6 +46,11 @@ public class DayAxisValueFormatter: NSObject, IAxisValueFormatter {
         }
     }
     
+    public func attributeForValue(_ value: Double,
+                                  axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
+    
     private func days(forMonth month: Int, year: Int) -> Int {
         // month is 0-based
         switch month {

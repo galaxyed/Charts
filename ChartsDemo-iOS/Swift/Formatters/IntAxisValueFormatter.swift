@@ -13,4 +13,9 @@ public class IntAxisValueFormatter: NSObject, IAxisValueFormatter {
     public func stringForValue(_ value: Double, axis: AxisBase?) -> String {
         return "\(Int(value))"
     }
+    
+    public func attributeForValue(_ value: Double,
+                                  axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
 }

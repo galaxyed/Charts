@@ -97,4 +97,9 @@ open class DefaultAxisValueFormatter: NSObject, IAxisValueFormatter
             return formatter?.string(from: NSNumber(floatLiteral: value)) ?? ""
         }
     }
+    
+    open func attributeForValue(_ value: Double, axis: AxisBase?) -> [NSAttributedString.Key : Any]? {
+        return nil
+    }
+
 }
