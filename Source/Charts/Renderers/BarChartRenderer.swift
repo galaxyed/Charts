@@ -445,16 +445,20 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             if isStacked {
                 let setIndex: Int = j / stackSize
                 if let entryYValues = (dataSet.entryForIndex(setIndex) as? BarChartDataEntry)?.yValues {
-                    if entryYValues.filter({$0 == 0.0}).count == 0 {
-                        drawBorder = false
-                    }
+//                    if entryYValues.filter({$0 == 0.0}).count == 0 {
+//                        drawBorder = false
+//                    }
                     
                     let entryIndex = j % stackSize
                     if entryYValues[entryIndex] == 0.0 {
                         isDrawBorder = false
                     } else {
                         if entryIndex == stackSize - 1 {
-                            isDrawBorder = true
+                            if entryYValues.filter({$0 != 0.0}).count == 0 {
+                                isDrawBorder = false
+                            } else {
+                                isDrawBorder = true
+                            }
                         } else {
                             let isHaveData = Array(entryYValues[entryIndex + 1..<stackSize]).filter({$0 != 0.0 }).count > 0
                             if isHaveData {
