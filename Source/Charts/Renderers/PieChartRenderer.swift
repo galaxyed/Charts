@@ -119,10 +119,15 @@ open class PieChartRenderer: DataRenderer
         let phaseX = animator.phaseX
         let phaseY = animator.phaseY
 
+        let borderWidth: CGFloat = dataSet.sliceBorderWidth
+        let borderColor = dataSet.sliceBorderColor
+        let drawBorder = borderWidth > 0.0
+        
         let entryCount = dataSet.entryCount
         let drawAngles = chart.drawAngles
         let center = chart.centerCircleBox
-        let radius = chart.radius
+//        let radius = chart.radius
+        let radius = chart.radius - borderWidth
         let drawInnerArc = chart.drawHoleEnabled && !chart.drawSlicesUnderHoleEnabled
         let userInnerRadius = drawInnerArc ? radius * chart.holeRadiusPercent : 0.0
 
@@ -278,6 +283,14 @@ open class PieChartRenderer: DataRenderer
             context.addPath(path)
             context.fillPath(using: .evenOdd)
 
+            if drawBorder {
+                context.setStrokeColor(borderColor.cgColor)
+                context.setLineWidth(borderWidth)
+                context.beginPath()
+                context.addPath(path)
+                context.strokePath()
+            }
+            
             let axElement = createAccessibleElement(withIndex: j,
                                                     container: chart,
                                                     dataSet: dataSet)
@@ -605,6 +618,11 @@ open class PieChartRenderer: DataRenderer
     {
         guard let chart = chart else { return }
 
+        let dataSet = chart.data?.dataSets.first as? IPieChartDataSet
+        let borderWidth = dataSet?.sliceBorderWidth ?? 0.0
+        let borderColor = dataSet?.sliceBorderColor ?? .black
+        let drawBorder = borderWidth > 0.0
+        
         if chart.drawHoleEnabled
         {
             context.saveGState()
@@ -620,6 +638,17 @@ open class PieChartRenderer: DataRenderer
                     // draw the hole-circle
                     context.setFillColor(chart.holeColor!.cgColor)
                     context.fillEllipse(in: CGRect(x: center.x - holeRadius, y: center.y - holeRadius, width: holeRadius * 2.0, height: holeRadius * 2.0))
+                }
+                
+                if drawBorder
+                {
+                    let path = UIBezierPath(ovalIn: CGRect(x: center.x - holeRadius, y: center.y - holeRadius, width: holeRadius * 2.0, height: holeRadius * 2.0)).cgPath
+                    
+                    context.setStrokeColor(borderColor.cgColor)
+                    context.setLineWidth(borderWidth)
+                    context.beginPath()
+                    context.addPath(path)
+                    context.strokePath()
                 }
             }
 
