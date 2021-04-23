@@ -518,9 +518,12 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                     }
                 } else {
                     if !hasRoundedCorner || !isDrawBorder {
-                        context.setStrokeColor(borderColor.cgColor)
-                        context.setLineWidth(borderWidth)
-                        context.stroke(barRect)
+                        let setIndex: Int = j / stackSize
+                        if let entryYValues = (dataSet.entryForIndex(setIndex) as? BarChartDataEntry)?.yValues, entryYValues.filter({$0 > 0.0}).count != 0 {
+                            context.setStrokeColor(borderColor.cgColor)
+                            context.setLineWidth(borderWidth)
+                            context.stroke(barRect)
+                        }
                     } else {
                         drawBorderWithCorner()
                     }
